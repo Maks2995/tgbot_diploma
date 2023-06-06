@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from typing import Optional, Any
 from django.core.management.base import BaseCommand
 from telebot import TeleBot
+import datetime
 from .keyboard import keyboard as kb
 import os
 from dotenv import load_dotenv, find_dotenv
@@ -64,6 +65,7 @@ def order(message):
 def save_order(message):
     user_data = message.from_user
     user_phone = message.text
+    date_now = datetime.datetime.now()
     telegram_ids = Profile.objects\
         .filter(user__is_staff=True) \
         .exclude(telegram_user_id=message.from_user.id) \
@@ -78,7 +80,9 @@ def save_order(message):
                     parse_mode='html')
 
     doc = open('client.txt', 'a+', encoding='utf-8')
-    doc.write(f"Имя - {user_data.first_name}\n Телефон - {user_phone}\n")
+    doc.write(f"Имя - {user_data.first_name}\n "
+              f"Телефон - {user_phone}\n"
+              f"Дата создания заявки - {date_now}")
     doc.close()
 
 
